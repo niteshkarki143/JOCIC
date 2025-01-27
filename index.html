@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Update viewport settings -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="Room G9 - Focus Security Services Abu Dhabi Accommodation">
+    <meta name="theme-color" content="#1a237e">
+    <title>Room G9 - Focus Security Services</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="doorSound" preload="auto">
+        <source src="door-creak.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="door-overlay">
+        <div class="room">
+            <div class="wall wall-left"></div>
+            <div class="wall wall-right"></div>
+            <div class="wall wall-back"></div>  <!-- Add back wall -->
+            <div class="floor"></div>
+            <div class="tubelight"></div>  <!-- Add this line -->
+            <div class="door-section">
+                <div class="door-frame">
+                    <div class="frame-border frame-border-top"></div>
+                    <div class="frame-border frame-border-bottom"></div>
+                    <div class="frame-border frame-border-left"></div>
+                    <div class="frame-border frame-border-right"></div>
+                    <div class="door">
+                        <div class="door-panel door-panel-top"></div>
+                        <div class="door-panel door-panel-bottom"></div>
+                        <div class="nameplate">
+                            <h1>ROOM G09</h1>
+                        </div>
+                        <div class="door-knob"></div> <!-- Replace door-handle with door-knob -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="container">
+            <h1 class="main-title">♦ Welcome to Room G9 ♦</h1>
+            <h2>Focus Security Services Abu Dhabi Accommodation</h2>
+            
+            <div class="table-title">Room No G9 Current Residence</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>923</td>
+                            <td>NARENDRA KUMAR THAPA MAGAR</td>
+                            <td>0557503725</td>
+                        </tr>
+                        <tr>
+                            <td>1301</td>
+                            <td>RAVI PURI</td>
+                            <td>564930319</td>
+                        </tr>
+                        <tr>
+                            <td>1415</td>
+                            <td>DHAN BAHADUR</td>
+                            <td>558384640</td>
+                        </tr>
+                        <tr>
+                            <td>1418</td>
+                            <td>BHUVAN GIRI</td>
+                            <td>0525581327</td>
+                        </tr>
+                        <tr>
+                            <td>1438</td>
+                            <td>NITESH KARKI</td>
+                            <td>0562203706</td>
+                        </tr>
+                        <tr>
+                            <td>1518</td>
+                            <td>TEJ NARAYANAN</td>
+                            <td>525420496</td>
+                        </tr>
+                        <tr>
+                            <td>1538</td>
+                            <td>BADAL PRADHAN</td>
+                            <td>557912817</td>
+                        </tr>
+                        <tr>
+                            <td>1543</td>
+                            <td>ANISH GANESH</td>
+                            <td>558107977</td>
+                        </tr>
+                        <tr>
+                            <td>1710</td>
+                            <td>UNKNOWN</td>
+                            <td>527231276</td>
+                        </tr>
+                        <tr>
+                            <td>LIFE GUARD</td>
+                            <td>NITESH</td>
+                            <td>586343958</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const doorSound = document.getElementById('doorSound');
+            const door = document.querySelector('.door');
+            const room = document.querySelector('.room');
+            const content = document.querySelector('.content');
+            const doorOverlay = document.querySelector('.door-overlay');
+            
+            doorSound.volume = 0.5;
+            let isAnimating = false;
+            
+            // Start door animation
+            setTimeout(() => {
+                if (!isAnimating) {
+                    isAnimating = true;
+                    doorSound.play();
+                    door.style.transform = 'rotateY(-85deg)'; // Single smooth transition
+                    
+                    // Start camera zoom after door opens
+                    door.addEventListener('transitionend', () => {
+                        room.style.animationPlayState = 'running';
+                        // Fade out sound
+                        const fadeOut = setInterval(() => {
+                            if (doorSound.volume > 0.05) {
+                                doorSound.volume -= 0.05;
+                            } else {
+                                doorSound.pause();
+                                clearInterval(fadeOut);
+                            }
+                        }, 50);
+                    }, { once: true }); // Ensure event listener runs only once
+                }
+            }, 1000);
+
+            room.addEventListener('animationend', () => {
+                doorOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    content.style.opacity = '1';
+                    doorOverlay.style.display = 'none';
+                }, 500);
+            });
+
+            // Add touch handling
+            if ('ontouchstart' in window) {
+                document.body.style.cursor = 'pointer';
+                document.addEventListener('touchmove', function(e) {
+                    if (e.target.closest('.table-wrapper')) {
+                        e.stopPropagation();
+                    } else {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+            }
+        });
+    </script>
+</body>
+</html>
