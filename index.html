@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Room G9 - Focus Security Services</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'Poppins', sans-serif;
+			color: #1a1a1a;
+		}
+		.text-3d {
+			text-shadow: 1px 1px 1px rgba(0,0,0,0.2),
+						2px 2px 2px rgba(0,0,0,0.1),
+						3px 3px 3px rgba(0,0,0,0.05);
+		}
+		.text-3d-light {
+			text-shadow: 1px 1px 1px rgba(255,255,255,0.3),
+						2px 2px 2px rgba(255,255,255,0.2);
+		}
+		.title-3d {
+			text-shadow: 3px 3px 0 #6b46c1,
+						5px 5px 0 #553c9a,
+						7px 7px 20px rgba(0,0,0,0.4);
+			letter-spacing: 2px;
+		}
+		.diamond {
+			display: inline-block;
+			transform: scale(1.5);
+			color: #9f7aea;
+			text-shadow: 2px 2px 0 #6b46c1;
+		}
+		.subtitle-3d {
+			text-shadow: 1px 1px 0 rgba(255,255,255,0.3),
+						2px 2px 10px rgba(0,0,0,0.2);
+			letter-spacing: 1px;
+		}
+		.gradient-bg {
+			background: linear-gradient(135deg, #6b46c1 0%, #2c7a7b 100%);
+			background-attachment: fixed;
+		}
+		.glass-effect {
+			background: rgba(255, 255, 255, 0.98);
+			backdrop-filter: blur(10px);
+			box-shadow: 0 8px 32px rgba(107, 70, 193, 0.25);
+		}
+		.table-row-animation {
+			transition: all 0.3s ease;
+		}
+		.table-row-animation:hover {
+			transform: translateX(8px);
+			background: linear-gradient(to right, rgba(79, 70, 229, 0.12), rgba(79, 70, 229, 0.06));
+			box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+		}
+		.modern-table {
+			border-radius: 16px;
+			overflow: hidden;
+			border: 2px solid rgba(107, 70, 193, 0.3);
+			box-shadow: 0 4px 20px rgba(107, 70, 193, 0.15);
+		}
+		.modern-table thead tr {
+			background: linear-gradient(135deg, #6b46c1 0%, #4a5568 100%);
+		}
+		.modern-table th {
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			font-size: 0.85rem;
+			padding: 16px;
+			border-right: 1px solid rgba(255, 255, 255, 0.15);
+		}
+		.modern-table th:last-child {
+			border-right: none;
+		}
+		.modern-table td {
+			padding: 16px;
+			border-bottom: 1px solid rgba(107, 70, 193, 0.15);
+			border-right: 1px solid rgba(107, 70, 193, 0.15);
+		}
+		.modern-table td:last-child {
+			border-right: none;
+		}
+		.modern-table tbody tr:last-child td {
+			border-bottom: none;
+		}
+		.phone-link {
+			padding: 6px 12px;
+			border-radius: 20px;
+			transition: all 0.3s ease;
+		}
+		.phone-link:hover {
+			background: rgba(107, 70, 193, 0.15);
+			transform: translateY(-2px);
+		}
+		.group-hover\:animate-bounce:hover {
+			animation: bounce 1s infinite;
+		}
+		@keyframes bounce {
+			0%, 100% {
+				transform: translateY(-25%);
+				animation-timing-function: cubic-bezier(0.8,0,1,1);
+			}
+			50% {
+				transform: none;
+				animation-timing-function: cubic-bezier(0,0,0.2,1);
+			}
+		}
+		@media (max-width: 640px) {
+			.mobile-table td { padding: 12px 8px; }
+		}
+		/* Add these new styles */
+		.compact-layout {
+			max-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.compact-header {
+			padding: 1.5rem 0;
+		}
+		
+		.compact-table {
+			margin-top: 0.5rem;
+		}
+		
+		.compact-table th,
+		.compact-table td {
+			padding: 0.65rem 1rem;
+			font-size: 0.9rem;
+		}
+		
+		.compact-title {
+			font-size: 2.5rem;
+			margin-bottom: 0.5rem;
+		}
+		
+		.compact-subtitle {
+			font-size: 1rem;
+			line-height: 1.4;
+		}
+		
+		.compact-footer {
+			padding: 0.75rem 0;
+			margin-top: 0.75rem;
+		}
+		
+		@media (max-height: 800px) {
+			.compact-table th,
+			compact-table td {
+				padding: 0.5rem 1rem;
+				font-size: 0.85rem;
+			}
+		}
+		
+		.welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1e1b4b 0%, #4c1d95 50%, #312e81 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1500px;
+        }
+        
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 4rem 6rem; /* Increased horizontal padding */
+            border-radius: 30px;
+            text-align: center;
+            transform-style: preserve-3d;
+            animation: floatCard 3s ease-in-out infinite, appear 1s ease-out;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .welcome-title {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            transform: translateZ(60px);
+            text-shadow: 0 0 30px rgba(147, 51, 234, 0.7);
+            letter-spacing: 4px;
+        }
+        
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            opacity: 0;
+        }
+        
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0) rotateX(2deg) rotateY(-2deg); }
+            50% { transform: translateY(-30px) rotateX(-2deg) rotateY(2deg); }
+        }
+        
+        @keyframes appear {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .welcome-fade {
+            animation: fadeOut 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 3.5s;
+        }
+        
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+        
+        .logo-3d {
+            width: 200px;  /* Increased from 150px */
+            height: 200px; /* Increased from 150px */
+            margin: 2rem auto;
+            animation: floatLogo 6s ease-in-out infinite;
+            transform-style: preserve-3d;
+            filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.5));
+            padding: 10px; /* Added padding */
+        }
+        
+        .logo-3d img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Changed from contain to cover */
+            border-radius: 10px; /* Changed from 50% to 10px for less cropping */
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes floatLogo {
+            0%, 100% { 
+                transform: translateY(0) rotateY(0deg); 
+            }
+            50% { 
+                transform: translateY(-20px) rotateY(180deg); 
+            }
+        }
+	</style>
+</head>
+<body class="gradient-bg min-h-screen">
+	<!-- Add welcome screen before main content -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+        <div class="welcome-card">
+            <div class="logo-3d">
+                <img src="logo.jpg" alt="Company Logo">
+            </div>
+            <h1 class="welcome-title">ROOM G09</h1>
+            <p class="welcome-subtitle">Focus Security Services</p>
+        </div>
+    </div>
+	<div class="container mx-auto px-4 compact-layout">
+		<header class="text-center compact-header">
+			<h1 class="compact-title font-bold text-white title-3d">
+				<span class="diamond">♦</span> WELCOME TO ROOM G09 <span class="diamond">♦</span>
+			</h1>
+			<h2 class="compact-subtitle font-medium text-white/95 subtitle-3d">
+				Focus Security Services<br>Abu Dhabi Accommodation
+			</h2>
+		</header>
+		<div class="glass-effect rounded-2xl shadow-2xl p-4 overflow-x-auto mx-auto max-w-6xl">
+			<div class="mb-3 flex justify-between items-center">
+				<div class="flex items-center gap-3">
+					<i class="fas fa-users text-2xl text-purple-700"></i>
+					<h3 class="text-2xl text-purple-700 font-semibold text-3d">Room Members</h3>
+				</div>
+				<div class="flex items-center gap-2 px-4 py-2 bg-purple-50 rounded-full">
+					<i class="fas fa-user-group text-purple-600"></i>
+
+					<span class="text-sm font-medium text-purple-600">Total: 10 members</span>
+				</div>
+			</div>
+			<table class="w-full mobile-table modern-table compact-table">
+				<thead>
+					<tr>
+						<th class="text-left font-semibold text-white/90">
+							<div class="flex items-center gap-2">
+								<i class="fas fa-id-card opacity-75"></i>
+								<span>ID</span>
+							</div>
+						</th>
+						<th class="text-center font-semibold text-white/90">
+							<div class="flex items-center justify-center gap-2">
+								<i class="fas fa-user opacity-75"></i>
+								<span>Name</span>
+							</div>
+						</th>
+						<th class="text-right font-semibold text-white/90">
+							<div class="flex items-center justify-end gap-2">
+								<i class="fas fa-phone opacity-75"></i>
+								<span>Mobile</span>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">923</td>
+						<td class="text-center font-semibold text-gray-800">NARENDRA KUMAR THAPA MAGAR</td>
+						<td class="text-right">
+							<a href="tel:0557503725" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								0557503725
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1301</td>
+						<td class="text-center font-semibold text-gray-800">RAVI PURI</td>
+						<td class="text-right">
+							<a href="tel:564930319" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								564930319
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1415</td>
+						<td class="text-center font-semibold text-gray-800">DHAN BAHADUR</td>
+						<td class="text-right">
+							<a href="tel:558384640" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								558384640
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1418</td>
+						<td class="text-center font-semibold text-gray-800">BHUVAN GIRI</td>
+						<td class="text-right">
+							<a href="tel:0525581327" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								0525581327
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1438</td>
+						<td class="text-center font-semibold text-gray-800">NITESH KARKI</td>
+						<td class="text-right">
+							<a href="tel:0562203706" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								0562203706
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1518</td>
+						<td class="text-center font-semibold text-gray-800">TEJ NARAYANAN</td>
+						<td class="text-right">
+							<a href="tel:525420496" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								525420496
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1538</td>
+						<td class="text-center font-semibold text-gray-800">BADAL PRADHAN</td>
+						<td class="text-right">
+							<a href="tel:557912817" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								557912817
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1543</td>
+						<td class="text-center font-semibold text-gray-800">ANISH GANESH</td>
+						<td class="text-right">
+							<a href="tel:558107977" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								558107977
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation">
+						<td class="text-gray-700 font-bold">1710</td>
+						<td class="text-center font-semibold text-gray-800">SUNIL THAPA</td>
+						<td class="text-right">
+							<a href="tel:527231276" class="phone-link inline-flex items-center justify-end text-purple-600 hover:text-purple-800">
+								<i class="fas fa-phone-alt mr-2"></i>
+								527231276
+							</a>
+						</td>
+					</tr>
+					<tr class="table-row-animation bg-green-100">
+						<td class="text-gray-700 font-bold border-l-4 border-green-600">LIFE GUARD</td>
+						<td class="text-center font-semibold text-gray-800">NITESH</td>
+						<td class="text-right">
+							<a href="tel:586343958" class="phone-link inline-flex items-center justify-end text-green-700 hover:text-green-900">
+								<i class="fas fa-phone-alt mr-2"></i>
+								586343958
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<footer class="text-center compact-footer text-white/90">
+			<div class="flex flex-col items-center gap-3">
+				<div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-3d-light">
+					<i class="far fa-clock text-white/80"></i>
+					<p class="text-sm">Last updated: <span id="currentDate" class="font-medium"></span></p>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+	<script>
+		// Particle animation
+function createParticles() {
+	const overlay = document.querySelector('.welcome-overlay');
+	for (let i = 0; i < 40; i++) {
+		const particle = document.createElement('div');
+		particle.className = 'particle';
+		const size = Math.random() * 20 + 8;
+		particle.style.width = size + 'px';
+		particle.style.height = size + 'px';
+		
+		const startX = Math.random() * 100;
+		const endX = startX + (Math.random() * 20 - 10);
+		
+		const animation = particle.animate([
+			{
+				left: startX + '%',
+				top: '100%',
+				opacity: 0,
+				transform: 'scale(0.3) rotate(0deg)'
+			},
+			{
+				left: endX + '%',
+				top: '0%',
+				opacity: Math.random() * 0.6 + 0.2,
+				transform: 'scale(1) rotate(360deg)'
+			}
+		], {
+			duration: Math.random() * 5000 + 4000,
+			iterations: Infinity,
+			delay: Math.random() * 3000,
+			easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+		});
+		
+		overlay.appendChild(particle);
+	}
+}
+
+        // Initialize welcome screen
+        window.addEventListener('load', () => {
+            createParticles();
+            const welcomeOverlay = document.getElementById('welcomeOverlay');
+            
+            setTimeout(() => {
+                welcomeOverlay.classList.add('welcome-fade');
+            }, 2000);
+        });
+
+        // Existing date script
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString();
+	</script>
+</body>
+</html>
