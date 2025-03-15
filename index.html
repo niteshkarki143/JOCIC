@@ -377,29 +377,85 @@
             roomTitle: "ROOM G09",
             companyName: "FOCUS SECURITY SERVICES",
             location: "Abu Dhabi Accommodation",
-            logoUrl: "logo.jpg"
+            logoUrl: "logo.jpg",
+            lastUpdated: new Date().getTime()
         };
 
         let siteSettings = JSON.parse(localStorage.getItem('siteSettings')) || defaultSettings;
 
-        // Auto refresh data every 30 seconds
+        // Auto refresh data every 5 seconds
         function startAutoRefresh() {
+            // Check for forced reload flag
+            let lastReloadCheck = localStorage.getItem('lastReloadCheck') || '0';
+            
             setInterval(() => {
-                const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
-                const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
-                
-                if (storedMembers) {
-                    members = storedMembers;
-                    const tbody = document.getElementById('membersList');
-                    tbody.innerHTML = '';
-                    populateAndAnimateTable();
+                // Check if a force reload was triggered from admin panel
+                const forceReload = localStorage.getItem('forceReload');
+                if (forceReload && forceReload > lastReloadCheck) {
+                    // Update the last reload check time
+                    localStorage.setItem('lastReloadCheck', new Date().getTime().toString());
+                    
+                    // Reload data
+                    const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
+                    const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
+                    
+                    if (storedMembers) {
+                        members = storedMembers;
+                        const tbody = document.getElementById('membersList');
+                        tbody.innerHTML = '';
+                        populateAndAnimateTable();
+                    }
+                    
+                    if (storedSettings) {
+                        siteSettings = storedSettings;
+                        updateSiteContent();
+                    }
+                    
+                    // Show update notification
+                    showUpdateNotification();
+                } else {
+                    // Regular check based on timestamps
+                    const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
+                    const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
+                    
+                    if (storedMembers && storedMembers.lastUpdated > (members.lastUpdated || 0)) {
+                        members = storedMembers;
+                        const tbody = document.getElementById('membersList');
+                        tbody.innerHTML = '';
+                        populateAndAnimateTable();
+                        showUpdateNotification();
+                    }
+                    
+                    if (storedSettings && storedSettings.lastUpdated > (siteSettings.lastUpdated || 0)) {
+                        siteSettings = storedSettings;
+                        updateSiteContent();
+                        showUpdateNotification();
+                    }
                 }
-                
-                if (storedSettings) {
-                    siteSettings = storedSettings;
-                    updateSiteContent();
-                }
-            }, 30000); // Check every 30 seconds
+            }, 5000); // Check every 5 seconds
+        }
+
+        // Show update notification
+        function showUpdateNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500 opacity-0';
+            notification.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Page updated with latest changes';
+            document.body.appendChild(notification);
+            
+            // Fade in
+            setTimeout(() => {
+                notification.classList.remove('opacity-0');
+                notification.classList.add('opacity-100');
+            }, 100);
+            
+            // Fade out and remove
+            setTimeout(() => {
+                notification.classList.remove('opacity-100');
+                notification.classList.add('opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
         }
 
         // Update site content with settings
