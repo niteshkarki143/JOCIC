@@ -183,27 +183,28 @@
             roomTitle: "ROOM G09",
             companyName: "FOCUS SECURITY SERVICES",
             location: "Abu Dhabi Accommodation",
-            logoUrl: "logo.jpg"
+            logoUrl: "logo.jpg",
+            lastUpdated: new Date().getTime()
         };
 
         let siteSettings = JSON.parse(localStorage.getItem('siteSettings')) || defaultSettings;
         
-        // Auto refresh data every 30 seconds
+        // Auto refresh data every 5 seconds (reduced from 30 seconds for faster updates)
         function startAutoRefresh() {
             setInterval(() => {
                 const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
                 const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
                 
-                if (storedMembers) {
+                if (storedMembers && storedMembers.lastUpdated > (members.lastUpdated || 0)) {
                     members = storedMembers;
                     renderMembers();
                 }
                 
-                if (storedSettings) {
+                if (storedSettings && storedSettings.lastUpdated > (siteSettings.lastUpdated || 0)) {
                     siteSettings = storedSettings;
                     loadSiteSettings();
                 }
-            }, 30000); // Check every 30 seconds
+            }, 5000); // Check every 5 seconds
         }
 
         // Load site settings into form
@@ -335,7 +336,10 @@
 
         // Save Members to localStorage and trigger update
         function saveMembers() {
+            // Add timestamp to track updates
+            members.lastUpdated = new Date().getTime();
             localStorage.setItem('roomMembers', JSON.stringify(members));
+            
             // Dispatch a custom event to notify other windows
             window.dispatchEvent(new CustomEvent('membersUpdated', {
                 detail: { members: members }
@@ -344,19 +348,27 @@
 
         // Save all changes
         document.getElementById('saveAllBtn').addEventListener('click', () => {
-            // Save current members
-            saveMembers();
+            // Save current members with timestamp
+            members.lastUpdated = new Date().getTime();
+            localStorage.setItem('roomMembers', JSON.stringify(members));
             
-            // Save current settings
+            // Save current settings with timestamp
             siteSettings = {
                 roomTitle: document.getElementById('roomTitle').value,
                 companyName: document.getElementById('companyName').value,
                 location: document.getElementById('location').value,
-                logoUrl: document.getElementById('logoUrl').value
+                logoUrl: document.getElementById('logoUrl').value,
+                lastUpdated: new Date().getTime()
             };
             localStorage.setItem('siteSettings', JSON.stringify(siteSettings));
             
-            // Dispatch a custom event for settings update
+            // Force index.html to reload by setting a special flag
+            localStorage.setItem('forceReload', new Date().getTime().toString());
+            
+            // Dispatch custom events for same-window updates
+            window.dispatchEvent(new CustomEvent('membersUpdated', {
+                detail: { members: members }
+            }));
             window.dispatchEvent(new CustomEvent('settingsUpdated', {
                 detail: { settings: siteSettings }
             }));
@@ -391,11 +403,15 @@
                 roomTitle: document.getElementById('roomTitle').value,
                 companyName: document.getElementById('companyName').value,
                 location: document.getElementById('location').value,
-                logoUrl: document.getElementById('logoUrl').value
+                logoUrl: document.getElementById('logoUrl').value,
+                lastUpdated: new Date().getTime()
             };
             localStorage.setItem('siteSettings', JSON.stringify(siteSettings));
             
-            // Dispatch settings updated event
+            // Force index.html to reload
+            localStorage.setItem('forceReload', new Date().getTime().toString());
+            
+            // Dispatch settings updated event for same-window updates
             window.dispatchEvent(new CustomEvent('settingsUpdated', {
                 detail: { settings: siteSettings }
             }));
