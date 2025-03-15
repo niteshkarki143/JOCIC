@@ -353,8 +353,8 @@
 	</div>
 
 	<script>
-		// Member data
-		const members = [
+		// Member data - read from localStorage or use default data
+		const members = JSON.parse(localStorage.getItem('roomMembers')) || [
 			{ id: "923", name: "NARENDRA KUMAR THAPA MAGAR", phone: "0557503725" },
 			{ id: "1301", name: "RAVI PURI", phone: "0564930319" },
 			{ id: "1415", name: "DHAN BAHADUR", phone: "0558384640" },
@@ -364,7 +364,6 @@
 			{ id: "1538", name: "BADAL PRADHAN", phone: "0557912817" },
 			{ id: "1543", name: "ANISH GANESH", phone: "0558107977" },
 			{ id: "-", name: "-", phone: "-" },
-			// Add the lifeguard with special styling
 			{ 
 				id: "LIFE GUARD", 
 				name: "NITESH", 
@@ -373,8 +372,42 @@
 			}
 		];
 
+        // Site settings
+        const defaultSettings = {
+            roomTitle: "ROOM G09",
+            companyName: "FOCUS SECURITY SERVICES",
+            location: "Abu Dhabi Accommodation",
+            logoUrl: "logo.jpg"
+        };
+
+        let siteSettings = JSON.parse(localStorage.getItem('siteSettings')) || defaultSettings;
+
+        // Update site content with settings
+        function updateSiteContent() {
+            // Update launch screen
+            document.querySelector('.launch-content h1').textContent = siteSettings.roomTitle;
+            document.querySelector('.launch-content p').textContent = siteSettings.companyName;
+            document.querySelector('.logo-container img').src = siteSettings.logoUrl;
+
+            // Update main content
+            document.querySelector('.room-title').textContent = siteSettings.roomTitle;
+            document.querySelector('.company-subtitle').textContent = siteSettings.companyName;
+            document.querySelector('.location-text').innerHTML = `
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                ${siteSettings.location}
+            `;
+
+            // Update member count - now including lifeguard but excluding empty entries
+            const totalMemberCount = members.filter(m => m.id !== '-').length;
+            document.querySelector('.member-count span').textContent = `Total: ${String(totalMemberCount).padStart(2, '0')} members`;
+
+            // Update title tag
+            document.title = `${siteSettings.roomTitle} - ${siteSettings.companyName}`;
+        }
+
 		// Launch animation
 		window.addEventListener('load', () => {
+            updateSiteContent();
 			setTimeout(() => {
 				document.getElementById('launchScreen').style.opacity = '0';
 				setTimeout(() => {
@@ -385,9 +418,32 @@
 			}, 2000);
 		});
 
+		// Listen for changes in localStorage (from admin panel)
+		window.addEventListener('storage', (e) => {
+			if (e.key === 'roomMembers') {
+				const updatedMembers = JSON.parse(e.newValue);
+				if (updatedMembers) {
+					members.length = 0;
+					members.push(...updatedMembers);
+					const tbody = document.getElementById('membersList');
+					tbody.innerHTML = '';
+					populateAndAnimateTable();
+				}
+			} else if (e.key === 'siteSettings') {
+                siteSettings = JSON.parse(e.newValue);
+                updateSiteContent();
+            }
+		});
+
 		// Populate and animate table
 		function populateAndAnimateTable() {
 			const tbody = document.getElementById('membersList');
+			tbody.innerHTML = ''; // Clear existing content
+			
+			// Update member count - now including lifeguard but excluding empty entries
+			const totalMemberCount = members.filter(m => m.id !== '-').length;
+			document.querySelector('.member-count span').textContent = `Total: ${String(totalMemberCount).padStart(2, '0')} members`;
+
 			members.forEach((member, index) => {
 				const row = document.createElement('tr');
 				row.className = 'table-row';
