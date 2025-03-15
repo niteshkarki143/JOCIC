@@ -456,6 +456,20 @@
             }
 		});
 
+		// Listen for custom events from admin panel
+		window.addEventListener('membersUpdated', (e) => {
+			members.length = 0;
+			members.push(...e.detail.members);
+			const tbody = document.getElementById('membersList');
+			tbody.innerHTML = '';
+			populateAndAnimateTable();
+		});
+
+		window.addEventListener('settingsUpdated', (e) => {
+			siteSettings = e.detail.settings;
+			updateSiteContent();
+		});
+
 		// Populate and animate table
 		function populateAndAnimateTable() {
 			const tbody = document.getElementById('membersList');
