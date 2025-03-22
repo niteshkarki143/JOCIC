@@ -8,13 +8,458 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 	<style>
-		/* Update Base Styles */
+		/* Holographic Base Theme */
 		body {
 			font-family: 'Poppins', sans-serif;
-			background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #312e81 100%);
+			background: linear-gradient(135deg, #000510 0%, #001233 50%, #000510 100%);
 			margin: 0;
 			min-height: 100vh;
 			overflow-x: hidden;
+			color: #e2e8f0;
+			position: relative;
+		}
+
+		body::before {
+			content: '';
+			position: fixed;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: 
+				repeating-linear-gradient(90deg, 
+					rgba(6, 182, 212, 0.03) 0px,
+					rgba(6, 182, 212, 0.03) 1px,
+					transparent 1px,
+					transparent 30px
+				),
+				repeating-linear-gradient(0deg,
+					rgba(6, 182, 212, 0.03) 0px,
+					rgba(6, 182, 212, 0.03) 1px,
+					transparent 1px,
+					transparent 30px
+				);
+			pointer-events: none;
+			z-index: 1;
+		}
+
+		/* Enhanced Holographic Launch Screen */
+		.launch-screen {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(45deg, #000510 0%, #001233 50%, #000510 100%);
+			z-index: 9999;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			transition: opacity 0.5s ease-out;
+		}
+
+		.launch-content {
+			text-align: center;
+			color: white;
+			transform: scale(0.8);
+			opacity: 0;
+			animation: launchAppear 1s ease forwards;
+			position: relative;
+		}
+
+		.launch-content::before {
+			content: '';
+			position: absolute;
+			top: -100px;
+			left: -100px;
+			right: -100px;
+			bottom: -100px;
+			background: radial-gradient(circle at center, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+			animation: holoPulse 2s ease-in-out infinite;
+			z-index: -1;
+		}
+
+		.logo-container {
+			width: 180px;
+			height: 180px;
+			margin: 0 auto 2rem;
+			position: relative;
+			animation: holoFloat 6s ease-in-out infinite;
+		}
+
+		.logo-container::before,
+		.logo-container::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			border-radius: 20px;
+			background: linear-gradient(45deg, 
+				rgba(6, 182, 212, 0.5),
+				rgba(59, 130, 246, 0.5)
+			);
+			z-index: -1;
+			filter: blur(20px);
+			animation: holoGlow 3s ease-in-out infinite alternate;
+		}
+
+		.logo-container::after {
+			filter: blur(40px);
+			opacity: 0.5;
+			animation-delay: 1.5s;
+		}
+
+		.logo-container img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 20px;
+			border: 2px solid rgba(6, 182, 212, 0.5);
+			position: relative;
+			z-index: 1;
+		}
+
+		/* Holographic Container Styles */
+		.main-container {
+			max-width: 1200px;
+			margin: 2rem auto;
+			padding: 2rem;
+			position: relative;
+			z-index: 2;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: all 0.5s ease-out;
+		}
+
+		.main-container.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		/* Holographic Card */
+		.card {
+			background: rgba(0, 18, 51, 0.7);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(6, 182, 212, 0.3);
+			box-shadow: 
+				0 0 30px rgba(6, 182, 212, 0.2),
+				inset 0 0 20px rgba(6, 182, 212, 0.1);
+			border-radius: 24px;
+			padding: 2rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.card::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: 
+				linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent),
+				linear-gradient(0deg, transparent 30%, rgba(6, 182, 212, 0.1), transparent 70%);
+			pointer-events: none;
+			animation: holoScan 8s linear infinite;
+		}
+
+		/* Holographic Header */
+		.header-container {
+			text-align: center;
+			margin-bottom: 3rem;
+			padding: 2rem;
+			border-radius: 20px;
+			background: linear-gradient(135deg, 
+				rgba(6, 182, 212, 0.1),
+				rgba(59, 130, 246, 0.05)
+			);
+			border: 1px solid rgba(6, 182, 212, 0.2);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.header-container::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: 
+				repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 50px,
+					rgba(6, 182, 212, 0.1) 50px,
+					rgba(6, 182, 212, 0.1) 51px
+				);
+			animation: holoLines 20s linear infinite;
+			pointer-events: none;
+		}
+
+		.room-title {
+			font-size: 4rem;
+			font-weight: 800;
+			background: linear-gradient(135deg, 
+				#fff 0%,
+				#0ea5e9 50%,
+				#0284c7 100%
+			);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			text-shadow: 
+				0 0 20px rgba(6, 182, 212, 0.5),
+				0 0 40px rgba(6, 182, 212, 0.3);
+			position: relative;
+			z-index: 1;
+			letter-spacing: 4px;
+		}
+
+		.company-subtitle {
+			font-size: 1.2rem;
+			color: #38bdf8;
+			font-weight: 500;
+			letter-spacing: 4px;
+			text-transform: uppercase;
+			text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+			margin: 1rem 0;
+		}
+
+		/* Holographic Table */
+		.modern-table {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+			margin-top: 1.5rem;
+			border: 1px solid rgba(6, 182, 212, 0.3);
+			border-radius: 16px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.modern-table::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(45deg,
+				transparent 0%,
+				rgba(6, 182, 212, 0.05) 50%,
+				transparent 100%
+			);
+			pointer-events: none;
+			animation: holoTableGlow 4s ease-in-out infinite;
+		}
+
+		.modern-table th {
+			background: rgba(6, 182, 212, 0.15);
+			color: #38bdf8;
+			padding: 1rem 1.5rem;
+			font-size: 0.9rem;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 2px;
+			border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+			position: relative;
+			overflow: hidden;
+		}
+
+		.modern-table th::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(6, 182, 212, 0.2),
+				transparent
+			);
+			animation: holoSweep 3s linear infinite;
+		}
+
+		.table-row {
+			transition: all 0.3s ease;
+			background: rgba(0, 18, 51, 0.3);
+			position: relative;
+		}
+
+		.table-row td {
+			padding: 1rem 1.5rem;
+			color: #e2e8f0;
+			font-size: 0.95rem;
+			border-bottom: 1px solid rgba(6, 182, 212, 0.2);
+		}
+
+		.table-row:hover {
+			background: rgba(6, 182, 212, 0.1);
+			transform: translateX(5px);
+			box-shadow: 
+				-5px 0 15px rgba(6, 182, 212, 0.2),
+				0 0 30px rgba(6, 182, 212, 0.1) inset;
+		}
+
+		/* Holographic Phone Link */
+		.phone-link {
+			color: #38bdf8;
+			background: rgba(6, 182, 212, 0.1);
+			border: 1px solid rgba(6, 182, 212, 0.3);
+			padding: 0.5rem 1rem;
+			border-radius: 20px;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			transition: all 0.3s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.phone-link::before {
+			content: '';
+			position: absolute;
+			top: -50%;
+			left: -50%;
+			width: 200%;
+			height: 200%;
+			background: linear-gradient(
+				45deg,
+				transparent,
+				rgba(6, 182, 212, 0.2),
+				transparent
+			);
+			transform: rotate(45deg);
+			animation: holoShine 3s linear infinite;
+		}
+
+		.phone-link:hover {
+			background: rgba(6, 182, 212, 0.2);
+			transform: translateY(-2px);
+			box-shadow: 
+				0 5px 15px rgba(6, 182, 212, 0.2),
+				0 0 30px rgba(6, 182, 212, 0.1);
+		}
+
+		/* Member Count Badge */
+		.member-count {
+			background: linear-gradient(135deg, 
+				rgba(6, 182, 212, 0.2),
+				rgba(59, 130, 246, 0.1)
+			);
+			border: 1px solid rgba(6, 182, 212, 0.3);
+			padding: 0.75rem 1.5rem;
+			border-radius: 20px;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.member-count::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: -100%;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(
+				90deg,
+				transparent,
+				rgba(6, 182, 212, 0.2),
+				transparent
+			);
+			animation: holoSweep 3s linear infinite;
+		}
+
+		/* Holographic Animations */
+		@keyframes holoScan {
+			0% { transform: translateY(-100%); }
+			100% { transform: translateY(100%); }
+		}
+
+		@keyframes holoLines {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+
+		@keyframes holoShine {
+			0% { transform: rotate(45deg) translateX(-100%); }
+			100% { transform: rotate(45deg) translateX(100%); }
+		}
+
+		@keyframes holoSweep {
+			0% { left: -100%; }
+			100% { left: 100%; }
+		}
+
+		@keyframes holoFloat {
+			0%, 100% { transform: translateY(0) rotate(0deg); }
+			25% { transform: translateY(-15px) rotate(2deg); }
+			75% { transform: translateY(15px) rotate(-2deg); }
+		}
+
+		@keyframes holoGlow {
+			0%, 100% { opacity: 0.5; transform: scale(1); }
+			50% { opacity: 0.8; transform: scale(1.1); }
+		}
+
+		@keyframes holoPulse {
+			0%, 100% { transform: scale(1); opacity: 0.5; }
+			50% { transform: scale(1.1); opacity: 0.8; }
+		}
+
+		@keyframes holoTableGlow {
+			0%, 100% { opacity: 0.5; }
+			50% { opacity: 1; }
+		}
+
+		/* Lifeguard Special Holographic Styling */
+		.lifeguard-row {
+			background: linear-gradient(90deg, 
+				rgba(6, 182, 212, 0.15),
+				transparent
+			) !important;
+			border-left: 4px solid #0ea5e9 !important;
+		}
+
+		.lifeguard-phone {
+			background: rgba(6, 182, 212, 0.15) !important;
+			border: 1px solid rgba(6, 182, 212, 0.4) !important;
+		}
+
+		/* Responsive Design */
+		@media (max-width: 768px) {
+			.room-title {
+				font-size: 2.5rem;
+				letter-spacing: 2px;
+			}
+			
+			.company-subtitle {
+				font-size: 1rem;
+				letter-spacing: 2px;
+			}
+			
+			.modern-table th,
+			.modern-table td {
+				padding: 0.75rem 1rem;
+			}
+			
+			.phone-link {
+				padding: 0.4rem 0.8rem;
+				font-size: 0.9rem;
+			}
+			
+			.member-count {
+				padding: 0.5rem 1rem;
+				font-size: 0.9rem;
+			}
 		}
 
 		/* Update Launch Screen */
@@ -298,6 +743,708 @@
 				margin-bottom: 1.5rem;
 			}
 		}
+
+		/* AR Profile Interface Styles */
+		.ar-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(10, 10, 40, 0.45);
+			backdrop-filter: blur(15px);
+			-webkit-backdrop-filter: blur(15px);
+			z-index: 9000;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+		}
+
+		.ar-overlay.visible {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		.ar-container {
+			position: relative;
+			width: 90%;
+			max-width: 800px;
+			height: 90vh;
+			max-height: 90vh;
+			border-radius: 20px;
+			overflow: hidden;
+			transform: scale(0.9) translateY(30px);
+			transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+			border: 1px solid rgba(138, 75, 255, 0.5);
+			box-shadow: 0 0 50px rgba(138, 75, 255, 0.3), inset 0 0 30px rgba(138, 75, 255, 0.2);
+			background: rgba(16, 12, 54, 0.35);
+			backdrop-filter: blur(10px);
+			-webkit-backdrop-filter: blur(10px);
+			display: flex;
+		}
+
+		.ar-overlay.visible .ar-container {
+			transform: scale(1) translateY(0);
+		}
+
+		.ar-background {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(135deg, rgba(16, 12, 54, 0.25) 0%, rgba(47, 21, 96, 0.25) 100%);
+			overflow: hidden;
+		}
+
+		.ar-grid {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 200%;
+			height: 200%;
+			background: 
+				linear-gradient(rgba(138, 75, 255, 0.07) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(138, 75, 255, 0.07) 1px, transparent 1px);
+			background-size: 20px 20px;
+			transform: perspective(500px) rotateX(60deg) translateY(-200px) translateX(-25%);
+			animation: gridMove 20s linear infinite;
+		}
+
+		@keyframes gridMove {
+			0% { transform: perspective(500px) rotateX(60deg) translateY(-200px) translateX(-25%); }
+			100% { transform: perspective(500px) rotateX(60deg) translateY(-180px) translateX(-25%); }
+		}
+
+		.ar-scanline {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 4px;
+			background: linear-gradient(to right, 
+				transparent 0%,
+				rgba(138, 75, 255, 0.5) 10%,
+				rgba(138, 75, 255, 0.8) 50%,
+				rgba(138, 75, 255, 0.5) 90%,
+				transparent 100%);
+			box-shadow: 0 0 15px rgba(138, 75, 255, 0.7);
+			z-index: 5;
+			animation: scan 3s linear infinite;
+		}
+
+		@keyframes scan {
+			0% { top: 0; }
+			100% { top: 100%; }
+		}
+
+		.ar-glitch {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="none"/></svg>');
+			opacity: 0;
+			z-index: 3;
+		}
+
+		.ar-glitch-active {
+			animation: glitch 0.2s step-end infinite alternate;
+		}
+
+		@keyframes glitch {
+			0% {
+				transform: translate(0);
+			}
+			20% {
+				transform: translate(-2px, 2px);
+			}
+			40% {
+				transform: translate(-2px, -2px);
+			}
+			60% {
+				transform: translate(2px, 2px);
+			}
+			80% {
+				transform: translate(2px, -2px);
+			}
+			100% {
+				transform: translate(0);
+			}
+		}
+
+		.ar-content {
+			position: relative;
+			z-index: 10;
+			padding: clamp(15px, 3vw, 30px);
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.ar-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: clamp(10px, 2vh, 20px);
+			padding: clamp(5px, 1.5vh, 15px) clamp(8px, 1.5vw, 15px);
+			background: rgba(30, 20, 70, 0.3);
+			border-radius: 12px;
+			border: 1px solid rgba(138, 75, 255, 0.25);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+			flex-shrink: 0;
+		}
+
+		.ar-title {
+			color: white;
+			font-size: clamp(1.2rem, 3vw, 1.8rem);
+			font-weight: 600;
+			text-shadow: 0 0 15px rgba(138, 75, 255, 0.9);
+			letter-spacing: 2px;
+		}
+
+		.ar-controls {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.ar-sound-toggle {
+			display: block; /* Show sound toggle button */
+			background: rgba(138, 75, 255, 0.25);
+			border: 1px solid rgba(138, 75, 255, 0.5);
+			color: white;
+			width: clamp(30px, 5vw, 40px);
+			height: clamp(30px, 5vw, 40px);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 0 15px rgba(138, 75, 255, 0.35);
+			flex-shrink: 0;
+		}
+
+		.ar-sound-toggle:hover {
+			background: rgba(138, 75, 255, 0.4);
+			transform: scale(1.1);
+			box-shadow: 0 0 20px rgba(138, 75, 255, 0.5);
+		}
+
+		.ar-sound-toggle.muted {
+			background: rgba(255, 75, 75, 0.25);
+			border-color: rgba(255, 75, 75, 0.5);
+			box-shadow: 0 0 15px rgba(255, 75, 75, 0.35);
+		}
+
+		.ar-sound-toggle.muted:hover {
+			background: rgba(255, 75, 75, 0.4);
+			box-shadow: 0 0 20px rgba(255, 75, 75, 0.5);
+		}
+
+		.ar-close {
+			background: rgba(138, 75, 255, 0.25);
+			border: 1px solid rgba(138, 75, 255, 0.5);
+			color: white;
+			width: clamp(30px, 5vw, 40px);
+			height: clamp(30px, 5vw, 40px);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 0 15px rgba(138, 75, 255, 0.35);
+			flex-shrink: 0;
+		}
+
+		.ar-close:hover {
+			background: rgba(138, 75, 255, 0.4);
+			transform: scale(1.1);
+			box-shadow: 0 0 20px rgba(138, 75, 255, 0.5);
+		}
+
+		.ar-profile {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-bottom: clamp(10px, 2vh, 20px);
+			animation: fadeInUp 0.5s ease forwards;
+			opacity: 0;
+			transform: translateY(20px);
+			animation-delay: 0.3s;
+			background: rgba(30, 20, 70, 0.3);
+			padding: clamp(15px, 2vh, 25px);
+			border-radius: 15px;
+			border: 1px solid rgba(138, 75, 255, 0.25);
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+			flex-shrink: 0;
+		}
+
+		.ar-profile-img {
+			width: clamp(80px, 15vw, 150px);
+			height: clamp(80px, 15vw, 150px);
+			border-radius: 50%;
+			border: 3px solid rgba(138, 75, 255, 0.6);
+			box-shadow: 0 0 30px rgba(138, 75, 255, 0.5);
+			margin-bottom: clamp(10px, 2vh, 20px);
+			background: rgba(20, 20, 50, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.ar-profile-img::after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+			z-index: 2;
+		}
+
+		.ar-profile-icon {
+			font-size: clamp(40px, 8vw, 70px);
+			color: rgba(138, 75, 255, 0.8);
+			filter: drop-shadow(0 0 10px rgba(138, 75, 255, 0.6));
+		}
+
+		.ar-profile-info {
+			text-align: center;
+		}
+
+		.ar-profile-name {
+			font-size: clamp(1.4rem, 3vw, 2.2rem);
+			font-weight: 700;
+			color: white;
+			text-shadow: 0 0 15px rgba(138, 75, 255, 0.9);
+			text-align: center;
+			margin-bottom: 5px;
+		}
+
+		.ar-profile-id {
+			font-size: clamp(0.9rem, 2vw, 1.2rem);
+			color: rgba(190, 165, 255, 0.95);
+			letter-spacing: 1px;
+			text-shadow: 0 0 8px rgba(138, 75, 255, 0.6);
+		}
+
+		.ar-details {
+			flex: 1;
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: clamp(10px, 2vw, 20px);
+			overflow: hidden; /* Prevent scrolling */
+			padding-right: 0;
+			margin-bottom: 0;
+		}
+
+		.ar-detail-card {
+			background: rgba(30, 20, 70, 0.3);
+			border: 1px solid rgba(138, 75, 255, 0.25);
+			border-radius: 15px;
+			padding: clamp(12px, 2vw, 20px);
+			animation: fadeInUp 0.5s ease forwards;
+			opacity: 0;
+			transform: translateY(20px);
+			box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+			backdrop-filter: blur(5px);
+			-webkit-backdrop-filter: blur(5px);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+		
+		.ar-detail-card:nth-child(1) { animation-delay: 0.4s; }
+		.ar-detail-card:nth-child(2) { animation-delay: 0.5s; }
+		.ar-detail-card:nth-child(3) { animation-delay: 0.6s; }
+		.ar-detail-card:nth-child(4) { animation-delay: 0.7s; }
+
+		.ar-detail-title {
+			color: rgba(190, 165, 255, 0.95);
+			font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+			font-weight: 500;
+			margin-bottom: 5px;
+			display: flex;
+			align-items: center;
+			text-shadow: 0 0 5px rgba(138, 75, 255, 0.4);
+		}
+
+		.ar-detail-title i {
+			margin-right: 8px;
+			opacity: 0.9;
+			filter: drop-shadow(0 0 5px rgba(138, 75, 255, 0.5));
+			font-size: clamp(0.8rem, 1.5vw, 1rem);
+		}
+
+		.ar-detail-value {
+			color: white;
+			font-size: clamp(1rem, 2vw, 1.3rem);
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			text-shadow: 0 0 8px rgba(138, 75, 255, 0.6);
+			word-break: break-word;
+		}
+
+		/* Lifeguard styling */
+		.lifeguard-profile .ar-container {
+			border-color: rgba(16, 185, 129, 0.5);
+			box-shadow: 0 0 50px rgba(16, 185, 129, 0.3), inset 0 0 30px rgba(16, 185, 129, 0.2);
+		}
+
+		.lifeguard-profile .ar-grid {
+			background: 
+				linear-gradient(rgba(16, 185, 129, 0.07) 1px, transparent 1px),
+				linear-gradient(90deg, rgba(16, 185, 129, 0.07) 1px, transparent 1px);
+		}
+
+		.lifeguard-profile .ar-scanline {
+			background: linear-gradient(to right, 
+				transparent 0%,
+				rgba(0, 255, 170, 0.5) 10%,
+				rgba(0, 255, 170, 0.8) 50%,
+				rgba(0, 255, 170, 0.5) 90%,
+				transparent 100%);
+			box-shadow: 0 0 15px rgba(0, 255, 170, 0.7);
+		}
+
+		.lifeguard-profile .ar-profile-img {
+			border-color: rgba(0, 255, 170, 0.6);
+			box-shadow: 0 0 30px rgba(0, 255, 170, 0.5);
+		}
+
+		.lifeguard-profile .ar-profile-icon {
+			color: rgba(0, 255, 170, 0.8);
+			filter: drop-shadow(0 0 10px rgba(0, 255, 170, 0.6));
+		}
+
+		.lifeguard-profile .ar-profile-name,
+		.lifeguard-profile .ar-detail-value {
+			text-shadow: 0 0 15px rgba(0, 255, 170, 0.9);
+		}
+
+		.lifeguard-profile .ar-detail-title,
+		.lifeguard-profile .ar-profile-id {
+			color: rgba(160, 255, 230, 0.95);
+			text-shadow: 0 0 5px rgba(0, 255, 170, 0.4);
+		}
+
+		.lifeguard-profile .ar-header,
+		.lifeguard-profile .ar-profile,
+		.lifeguard-profile .ar-detail-card {
+			border-color: rgba(0, 255, 170, 0.25);
+		}
+
+		.lifeguard-profile .ar-close {
+			background: rgba(0, 255, 170, 0.25);
+			border-color: rgba(0, 255, 170, 0.5);
+			box-shadow: 0 0 15px rgba(0, 255, 170, 0.35);
+		}
+
+		.lifeguard-profile .ar-close:hover {
+			background: rgba(0, 255, 170, 0.4);
+			box-shadow: 0 0 20px rgba(0, 255, 170, 0.5);
+		}
+		
+		.lifeguard-profile:hover .ar-profile-img {
+			box-shadow: 0 0 40px rgba(0, 255, 170, 0.6);
+			transition: box-shadow 0.5s ease;
+		}
+
+		/* Animation keyframes */
+		@keyframes pulse {
+			0% { opacity: 0.9; }
+			50% { opacity: 1; transform: scale(1.02); }
+			100% { opacity: 0.9; }
+		}
+
+		/* Mobile responsiveness for AR interface */
+		@media (max-width: 768px) {
+			.ar-container {
+				width: 95%;
+				height: 95vh;
+			}
+			
+			.ar-details {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		@media (max-height: 700px) {
+			.ar-profile {
+				flex-direction: row;
+				align-items: center;
+				justify-content: flex-start;
+				text-align: left;
+				padding: clamp(10px, 1.5vh, 15px);
+			}
+			
+			.ar-profile-img {
+				margin-right: 15px;
+				margin-bottom: 0;
+				width: clamp(60px, 10vw, 100px);
+				height: clamp(60px, 10vw, 100px);
+			}
+			
+			.ar-profile-info {
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+			}
+			
+			.ar-profile-name {
+				text-align: left;
+				font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+				margin-bottom: 3px;
+			}
+			
+			.ar-profile-id {
+				font-size: clamp(0.8rem, 1.5vw, 1rem);
+			}
+			
+			.ar-details {
+				margin-top: 10px;
+			}
+			
+			.ar-detail-card {
+				padding: clamp(10px, 1.5vh, 15px);
+			}
+		}
+		
+		@media (max-height: 500px) {
+			.ar-header {
+				margin-bottom: 8px;
+				padding: 5px 10px;
+			}
+			
+			.ar-title {
+				font-size: clamp(1rem, 2vw, 1.4rem);
+			}
+			
+			.ar-profile {
+				margin-bottom: 8px;
+			}
+			
+			.ar-detail-value {
+				font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+			}
+		}
+
+		@keyframes fadeInUp {
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		/* Additional glow effect for focused content */
+		.ar-container:hover .ar-profile-img {
+			box-shadow: 0 0 40px rgba(138, 75, 255, 0.6);
+			transition: box-shadow 0.5s ease;
+		}
+
+		/* Enhanced depth effect for the AR interface */
+		.ar-overlay:before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: 
+				linear-gradient(135deg, rgba(138, 75, 255, 0.1) 0%, transparent 100%),
+				radial-gradient(circle at center, transparent 30%, rgba(10, 10, 40, 0.2) 100%);
+			pointer-events: none;
+			z-index: 3;
+		}
+
+		.lifeguard-profile .ar-overlay:before {
+			background: 
+				linear-gradient(135deg, rgba(0, 255, 170, 0.1) 0%, transparent 100%),
+				radial-gradient(circle at center, transparent 30%, rgba(10, 40, 30, 0.2) 100%);
+		}
+
+		/* Add typing effect styles */
+		.typing-text {
+			display: inline-block;
+			white-space: nowrap;
+			overflow: hidden;
+			position: relative;
+		}
+
+		.typing-cursor {
+			display: inline-block;
+			width: 2px;
+			height: 1.2em;
+			background-color: rgba(138, 75, 255, 0.8);
+			margin-left: 2px;
+			vertical-align: middle;
+			animation: blink 0.7s infinite;
+		}
+
+		.lifeguard-profile .typing-cursor {
+			background-color: rgba(0, 255, 170, 0.8);
+		}
+
+		@keyframes blink {
+			0%, 100% { opacity: 1; }
+			50% { opacity: 0; }
+		}
+		
+		/* Enhanced Glitch Effects */
+		.text-glitch {
+			position: relative;
+			display: inline-block;
+		}
+		
+		.text-glitch::before,
+		.text-glitch::after {
+			content: attr(data-text);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+		
+		.text-glitch::before {
+			left: 2px;
+			color: #ff00ff;
+			animation: text-glitch-1 3s infinite linear alternate-reverse;
+		}
+		
+		.text-glitch::after {
+			left: -2px;
+			color: #00ffff;
+			animation: text-glitch-2 2s infinite linear alternate-reverse;
+		}
+		
+		.lifeguard-profile .text-glitch::before {
+			color: #00ffaa;
+		}
+		
+		.lifeguard-profile .text-glitch::after {
+			color: #aaff00;
+		}
+		
+		@keyframes text-glitch-1 {
+			0%, 95%, 100% { opacity: 0; transform: translate(0); }
+			10%, 15% { opacity: 0.3; transform: translate(-2px, 2px); }
+			20%, 25% { opacity: 0; }
+			30%, 35% { opacity: 0.3; transform: translate(2px, -2px); }
+		}
+		
+		@keyframes text-glitch-2 {
+			0%, 90%, 100% { opacity: 0; transform: translate(0); }
+			5%, 10% { opacity: 0.3; transform: translate(2px); }
+			15%, 20% { opacity: 0; }
+			55%, 60% { opacity: 0.3; transform: translate(-2px); }
+		}
+		
+		.ar-glitch-effect {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 30;
+			mix-blend-mode: screen;
+			opacity: 0;
+		}
+		
+		.ar-glitch-lines {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: repeating-linear-gradient(
+				0deg,
+				transparent,
+				transparent 5px,
+				rgba(138, 75, 255, 0.1) 5px,
+				rgba(138, 75, 255, 0.1) 6px
+			);
+			background-size: 100% 100%;
+			animation: moveLines 3s linear infinite;
+			opacity: 0;
+		}
+		
+		.lifeguard-profile .ar-glitch-lines {
+			background: repeating-linear-gradient(
+				0deg,
+				transparent,
+				transparent 5px,
+				rgba(0, 255, 170, 0.1) 5px,
+				rgba(0, 255, 170, 0.1) 6px
+			);
+		}
+		
+		@keyframes moveLines {
+			0% { background-position: 0 0; }
+			100% { background-position: 0 100%; }
+		}
+		
+		.ar-color-shift {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: radial-gradient(
+				circle at center,
+				transparent 30%,
+				rgba(138, 75, 255, 0.1) 70%
+			);
+			mix-blend-mode: color-dodge;
+			animation: colorPulse 4s ease-in-out infinite;
+			opacity: 0.7;
+		}
+		
+		.lifeguard-profile .ar-color-shift {
+			background: radial-gradient(
+				circle at center,
+				transparent 30%,
+				rgba(0, 255, 170, 0.1) 70%
+			);
+		}
+		
+		@keyframes colorPulse {
+			0%, 100% { transform: scale(1); opacity: 0.5; }
+			50% { transform: scale(1.2); opacity: 0.7; }
+		}
+		
+		.glitch-active .ar-glitch-effect,
+		.glitch-active .ar-glitch-lines {
+			opacity: 1;
+		}
+		
+		.shake-effect {
+			animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+			transform: translate3d(0, 0, 0);
+		}
+		
+		@keyframes shake {
+			10%, 90% { transform: translate3d(-1px, 0, 0); }
+			20%, 80% { transform: translate3d(2px, 0, 0); }
+			30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+			40%, 60% { transform: translate3d(4px, 0, 0); }
+		}
 	</style>
 </head>
 <body>
@@ -352,139 +1499,206 @@
 		</div>
 	</div>
 
+	<!-- AR Profile Overlay -->
+	<div class="ar-overlay" id="arOverlay">
+		<div class="ar-container">
+			<div class="ar-background">
+				<div class="ar-grid"></div>
+				<div class="ar-scanline"></div>
+				<div class="ar-glitch" id="arGlitch"></div>
+				<div class="ar-glitch-lines"></div>
+				<div class="ar-color-shift"></div>
+			</div>
+			<div class="ar-content">
+				<div class="ar-header">
+					<div class="ar-title">PERSONNEL PROFILE</div>
+					<div class="ar-controls">
+						<div class="ar-sound-toggle" id="arSoundToggle">
+							<i class="fas fa-volume-up"></i>
+						</div>
+						<div class="ar-close" id="arClose">
+							<i class="fas fa-times"></i>
+						</div>
+					</div>
+				</div>
+				<div class="ar-profile">
+					<div class="ar-profile-img">
+						<i class="fas fa-user ar-profile-icon"></i>
+					</div>
+					<div class="ar-profile-info">
+						<div class="ar-profile-name" id="arProfileName">Loading...</div>
+						<div class="ar-profile-id" id="arProfileId">ID: ----</div>
+					</div>
+				</div>
+				<div class="ar-details">
+					<div class="ar-detail-card">
+						<div class="ar-detail-title">
+							<i class="fas fa-phone-alt"></i> CONTACT
+						</div>
+						<div class="ar-detail-value" id="arProfilePhone">----</div>
+					</div>
+					<div class="ar-detail-card">
+						<div class="ar-detail-title">
+							<i class="fas fa-id-badge"></i> POSITION
+						</div>
+						<div class="ar-detail-value" id="arProfilePosition">SECURITY STAFF</div>
+					</div>
+					<div class="ar-detail-card">
+						<div class="ar-detail-title">
+							<i class="fas fa-map-marker-alt"></i> DUTY LOCATION
+						</div>
+						<div class="ar-detail-value" id="arProfileLocation">ABU DHABI ACCOMMODATION</div>
+					</div>
+					<div class="ar-detail-card">
+						<div class="ar-detail-title">
+							<i class="fas fa-shield-alt"></i> STATUS
+						</div>
+						<div class="ar-detail-value">ACTIVE</div>
+					</div>
+				</div>
+				<div class="ar-glitch-effect"></div>
+			</div>
+		</div>
+	</div>
+
 	<script>
-		// Member data - read from localStorage or use default data
-		const members = JSON.parse(localStorage.getItem('roomMembers')) || [
-			{ id: "923", name: "NARENDRA KUMAR THAPA MAGAR", phone: "0557503725" },
-			{ id: "1301", name: "RAVI PURI", phone: "0564930319" },
-			{ id: "1415", name: "DHAN BAHADUR", phone: "0558384640" },
-			{ id: "1418", name: "BHUVAN GIRI", phone: "0525581327" },
-			{ id: "1438", name: "NITESH KARKI", phone: "0562203706" },
-			{ id: "1518", name: "TEJ NARAYANAN", phone: "0525420496" },
-			{ id: "1538", name: "BADAL PRADHAN", phone: "0557912817" },
-			{ id: "1543", name: "ANISH GANESH", phone: "0558107977" },
-			{ id: "-", name: "-", phone: "-" },
+		// JSONBin.io configuration - free JSON storage service
+		const JSONBIN_API_KEY = "$2a$10$YourAPIKeyHere"; // Replace with your actual API key
+		const JSONBIN_BIN_ID = "YourBinIDHere"; // Replace with your actual bin ID
+		const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+		// Default data
+		const defaultMembers = [
+			{ id: "923", name: "NARENDRA KUMAR THAPA MAGAR", phone: "0557503725", dutyLocation: "ABU DHABI ACCOMMODATION" },
+			{ id: "1301", name: "RAVI PURI", phone: "0564930319", dutyLocation: "ABU DHABI ACCOMMODATION" },
+			{ id: "1415", name: "DHAN BAHADUR", phone: "0558384640", dutyLocation: "JOCIC" },
+			{ id: "1418", name: "BHUVAN GIRI", phone: "0525581327", dutyLocation: "al barja park 10" },
+			{ id: "1438", name: "NITESH KARKI", phone: "0562203706", dutyLocation: "JOCIC" },
+			{ id: "1518", name: "TEJ NARAYANAN", phone: "0525420496", dutyLocation: "Al-Anoud Park" },
+			{ id: "1538", name: "BADAL PRADHAN", phone: "0557912817", dutyLocation: "ABU DHABI ACCOMMODATION" },
+			{ id: "1543", name: "ANISH GANESH", phone: "0558107977", dutyLocation: "ABU DHABI ACCOMMODATION" },
+			{ id: "-", name: "-", phone: "-", dutyLocation: "ABU DHABI ACCOMMODATION" },
 			{ 
 				id: "LIFE GUARD", 
 				name: "NITESH", 
 				phone: "0586343958",
+				dutyLocation: "AL Raha Beach Tower",
 				isLifeGuard: true 
 			}
 		];
 
-        // Site settings
-        const defaultSettings = {
-            roomTitle: "ROOM G09",
-            companyName: "FOCUS SECURITY SERVICES",
-            location: "Abu Dhabi Accommodation",
-            logoUrl: "logo.jpg",
-            lastUpdated: new Date().getTime()
-        };
+		// Site settings
+		const defaultSettings = {
+			roomTitle: "ROOM G09",
+			companyName: "FOCUS SECURITY SERVICES",
+			location: "Abu Dhabi Accommodation",
+			logoUrl: "logo.jpg"
+		};
 
-        let siteSettings = JSON.parse(localStorage.getItem('siteSettings')) || defaultSettings;
+		// Initialize members and settings
+		let members = defaultMembers;
+		let siteSettings = defaultSettings;
+		let lastUpdated = 0;
 
-        // Auto refresh data every 5 seconds
-        function startAutoRefresh() {
-            // Check for forced reload flag
-            let lastReloadCheck = localStorage.getItem('lastReloadCheck') || '0';
-            
-            setInterval(() => {
-                // Check if a force reload was triggered from admin panel
-                const forceReload = localStorage.getItem('forceReload');
-                if (forceReload && forceReload > lastReloadCheck) {
-                    // Update the last reload check time
-                    localStorage.setItem('lastReloadCheck', new Date().getTime().toString());
-                    
-                    // Reload data
-                    const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
-                    const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
-                    
-                    if (storedMembers) {
-                        members = storedMembers;
-                        const tbody = document.getElementById('membersList');
-                        tbody.innerHTML = '';
-                        populateAndAnimateTable();
-                    }
-                    
-                    if (storedSettings) {
-                        siteSettings = storedSettings;
-                        updateSiteContent();
-                    }
-                    
-                    // Show update notification
-                    showUpdateNotification();
-                } else {
-                    // Regular check based on timestamps
-                    const storedMembers = JSON.parse(localStorage.getItem('roomMembers'));
-                    const storedSettings = JSON.parse(localStorage.getItem('siteSettings'));
-                    
-                    if (storedMembers && storedMembers.lastUpdated > (members.lastUpdated || 0)) {
-                        members = storedMembers;
-                        const tbody = document.getElementById('membersList');
-                        tbody.innerHTML = '';
-                        populateAndAnimateTable();
-                        showUpdateNotification();
-                    }
-                    
-                    if (storedSettings && storedSettings.lastUpdated > (siteSettings.lastUpdated || 0)) {
-                        siteSettings = storedSettings;
-                        updateSiteContent();
-                        showUpdateNotification();
-                    }
-                }
-            }, 5000); // Check every 5 seconds
-        }
+		// Fetch data from JSONBin
+		async function fetchData() {
+			try {
+				const response = await fetch(JSONBIN_URL, {
+					method: 'GET',
+					headers: {
+						'X-Master-Key': JSONBIN_API_KEY
+					}
+				});
+				
+				if (!response.ok) {
+					throw new Error('Failed to fetch data');
+				}
+				
+				const data = await response.json();
+				
+				// If we have data and it's newer than what we have
+				if (data && data.record && data.record.lastUpdated > lastUpdated) {
+					lastUpdated = data.record.lastUpdated;
+					members = data.record.members || defaultMembers;
+					siteSettings = data.record.siteSettings || defaultSettings;
+					
+					// Update UI
+					updateSiteContent();
+					const tbody = document.getElementById('membersList');
+					tbody.innerHTML = '';
+					populateAndAnimateTable();
+					
+					// Show notification if not first load
+					if (lastUpdated > 0) {
+						showUpdateNotification();
+					}
+				}
+			} catch (error) {
+				console.error('Error fetching data:', error);
+			}
+		}
 
-        // Show update notification
-        function showUpdateNotification() {
-            const notification = document.createElement('div');
-            notification.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500 opacity-0';
-            notification.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Page updated with latest changes';
-            document.body.appendChild(notification);
-            
-            // Fade in
-            setTimeout(() => {
-                notification.classList.remove('opacity-0');
-                notification.classList.add('opacity-100');
-            }, 100);
-            
-            // Fade out and remove
-            setTimeout(() => {
-                notification.classList.remove('opacity-100');
-                notification.classList.add('opacity-0');
-                setTimeout(() => {
-                    notification.remove();
-                }, 500);
-            }, 3000);
-        }
+		// Auto refresh data every 30 seconds
+		function startAutoRefresh() {
+			// Initial fetch
+			fetchData();
+			
+			// Set up interval for periodic checks
+			setInterval(() => {
+				fetchData();
+			}, 30000); // Check every 30 seconds
+		}
 
-        // Update site content with settings
-        function updateSiteContent() {
-            // Update launch screen
-            document.querySelector('.launch-content h1').textContent = siteSettings.roomTitle;
-            document.querySelector('.launch-content p').textContent = siteSettings.companyName;
-            document.querySelector('.logo-container img').src = siteSettings.logoUrl;
+		// Show update notification
+		function showUpdateNotification() {
+			const notification = document.createElement('div');
+			notification.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg transition-opacity duration-500 opacity-0';
+			notification.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Page updated with latest changes';
+			document.body.appendChild(notification);
+			
+			// Fade in
+			setTimeout(() => {
+				notification.classList.remove('opacity-0');
+				notification.classList.add('opacity-100');
+			}, 100);
+			
+			// Fade out and remove
+			setTimeout(() => {
+				notification.classList.remove('opacity-100');
+				notification.classList.add('opacity-0');
+				setTimeout(() => {
+					notification.remove();
+				}, 500);
+			}, 3000);
+		}
 
-            // Update main content
-            document.querySelector('.room-title').textContent = siteSettings.roomTitle;
-            document.querySelector('.company-subtitle').textContent = siteSettings.companyName;
-            document.querySelector('.location-text').innerHTML = `
-                <i class="fas fa-map-marker-alt mr-2"></i>
-                ${siteSettings.location}
-            `;
+		// Update site content with settings
+		function updateSiteContent() {
+			// Update launch screen
+			document.querySelector('.launch-content h1').textContent = siteSettings.roomTitle;
+			document.querySelector('.launch-content p').textContent = siteSettings.companyName;
+			document.querySelector('.logo-container img').src = siteSettings.logoUrl;
 
-            // Update member count - now including lifeguard but excluding empty entries
-            const totalMemberCount = members.filter(m => m.id !== '-').length;
-            document.querySelector('.member-count span').textContent = `Total: ${String(totalMemberCount).padStart(2, '0')} members`;
+			// Update main content
+			document.querySelector('.room-title').textContent = siteSettings.roomTitle;
+			document.querySelector('.company-subtitle').textContent = siteSettings.companyName;
+			document.querySelector('.location-text').innerHTML = `
+				<i class="fas fa-map-marker-alt mr-2"></i>
+				${siteSettings.location}
+			`;
 
-            // Update title tag
-            document.title = `${siteSettings.roomTitle} - ${siteSettings.companyName}`;
-        }
+			// Update member count - now including lifeguard but excluding empty entries
+			const totalMemberCount = members.filter(m => m.id !== '-').length;
+			document.querySelector('.member-count span').textContent = `Total: ${String(totalMemberCount).padStart(2, '0')} members`;
+
+			// Update title tag
+			document.title = `${siteSettings.roomTitle} - ${siteSettings.companyName}`;
+		}
 
 		// Launch animation
 		window.addEventListener('load', () => {
-            updateSiteContent();
-            startAutoRefresh(); // Start auto refresh when page loads
+			updateSiteContent();
+			startAutoRefresh(); // Start auto refresh when page loads
 			setTimeout(() => {
 				document.getElementById('launchScreen').style.opacity = '0';
 				setTimeout(() => {
@@ -493,37 +1707,6 @@
 					populateAndAnimateTable();
 				}, 500);
 			}, 2000);
-		});
-
-		// Listen for changes in localStorage (from admin panel)
-		window.addEventListener('storage', (e) => {
-			if (e.key === 'roomMembers') {
-				const updatedMembers = JSON.parse(e.newValue);
-				if (updatedMembers) {
-					members.length = 0;
-					members.push(...updatedMembers);
-					const tbody = document.getElementById('membersList');
-					tbody.innerHTML = '';
-					populateAndAnimateTable();
-				}
-			} else if (e.key === 'siteSettings') {
-                siteSettings = JSON.parse(e.newValue);
-                updateSiteContent();
-            }
-		});
-
-		// Listen for custom events from admin panel
-		window.addEventListener('membersUpdated', (e) => {
-			members.length = 0;
-			members.push(...e.detail.members);
-			const tbody = document.getElementById('membersList');
-			tbody.innerHTML = '';
-			populateAndAnimateTable();
-		});
-
-		window.addEventListener('settingsUpdated', (e) => {
-			siteSettings = e.detail.settings;
-			updateSiteContent();
 		});
 
 		// Populate and animate table
@@ -554,6 +1737,14 @@
 						</a>
 					</td>
 				`;
+				
+				// Add click event to show AR profile
+				row.addEventListener('click', (e) => {
+					// Don't trigger AR if clicking on phone link
+					if (e.target.closest('.phone-link')) return;
+					showARProfile(member);
+				});
+				
 				tbody.appendChild(row);
 				
 				setTimeout(() => {
@@ -561,6 +1752,263 @@
 				}, index * 100);
 			});
 		}
+
+		// Create glitch effects
+		function createGlitchEffects(glitchElement) {
+			const arContainer = document.querySelector('.ar-container');
+			const arGlitchEffect = document.querySelector('.ar-glitch-effect');
+			const arGlitchLines = document.querySelector('.ar-glitch-lines');
+			
+			// Initial glitch on open
+			glitchElement.classList.add('ar-glitch-active');
+			arContainer.classList.add('shake-effect');
+			
+			setTimeout(() => {
+				glitchElement.classList.remove('ar-glitch-active');
+				arContainer.classList.remove('shake-effect');
+			}, 300);
+			
+			// Random glitches (visual only)
+			const glitchInterval = setInterval(() => {
+				const rand = Math.random();
+				
+				if (rand > 0.7) {
+					// Major glitch
+					glitchElement.classList.add('ar-glitch-active');
+					arContainer.classList.add('glitch-active');
+					arGlitchEffect.style.opacity = '0.8';
+					arGlitchLines.style.opacity = '0.5';
+					
+					if (rand > 0.9) {
+						// Add shake for severe glitches
+						arContainer.classList.add('shake-effect');
+					}
+					
+					// Add text glitch effect to random elements
+					applyTextGlitchEffect();
+					
+					setTimeout(() => {
+						glitchElement.classList.remove('ar-glitch-active');
+						arContainer.classList.remove('glitch-active');
+						arContainer.classList.remove('shake-effect');
+						arGlitchEffect.style.opacity = '0';
+						arGlitchLines.style.opacity = '0';
+						
+						// Remove text glitch effects
+						removeTextGlitchEffect();
+					}, 200 + Math.random() * 300);
+				} else if (rand > 0.5) {
+					// Minor glitch
+					arGlitchLines.style.opacity = '0.3';
+					
+					setTimeout(() => {
+						arGlitchLines.style.opacity = '0';
+					}, 100 + Math.random() * 200);
+				}
+			}, 2000);
+			
+			// Store interval ID on the element to clear it later
+			glitchElement.dataset.interval = glitchInterval;
+		}
+		
+		// Apply text glitch effect to random elements
+		function applyTextGlitchEffect() {
+			const elements = document.querySelectorAll('.ar-profile-name, .ar-profile-id, .ar-detail-value, .ar-detail-title');
+			
+			elements.forEach(el => {
+				if (Math.random() > 0.7) {
+					const text = el.textContent;
+					el.setAttribute('data-text', text);
+					el.classList.add('text-glitch');
+				}
+			});
+		}
+		
+		// Remove text glitch effect from all elements
+		function removeTextGlitchEffect() {
+			const elements = document.querySelectorAll('.text-glitch');
+			elements.forEach(el => {
+				el.classList.remove('text-glitch');
+			});
+		}
+
+		// Replace the WalkieTalkieSound system with Audio Player
+		const AudioPlayer = {
+			audio: null,
+			muted: false,
+
+			init: function() {
+				this.audio = new Audio('audio.mp3');
+				this.audio.loop = true;
+				
+				// Set up sound toggle button
+				const soundToggle = document.getElementById('arSoundToggle');
+				if (soundToggle) {
+					soundToggle.addEventListener('click', () => {
+						this.toggleMute();
+						if (this.muted) {
+							soundToggle.classList.add('muted');
+							soundToggle.querySelector('i').className = 'fas fa-volume-mute';
+						} else {
+							soundToggle.classList.remove('muted');
+							soundToggle.querySelector('i').className = 'fas fa-volume-up';
+						}
+					});
+				}
+			},
+
+			play: function() {
+				if (!this.muted && this.audio) {
+					this.audio.play().catch(e => console.warn('Audio playback failed:', e));
+				}
+			},
+
+			stop: function() {
+				if (this.audio) {
+					this.audio.pause();
+					this.audio.currentTime = 0;
+				}
+			},
+
+			toggleMute: function() {
+				this.muted = !this.muted;
+				if (this.audio) {
+					if (this.muted) {
+						this.stop();
+					} else if (document.getElementById('arOverlay').classList.contains('visible')) {
+						this.play();
+					}
+				}
+				return this.muted;
+			}
+		};
+
+		// Update showARProfile function to use new audio system
+		function showARProfile(member) {
+			const arOverlay = document.getElementById('arOverlay');
+			const arProfileName = document.getElementById('arProfileName');
+			const arProfileId = document.getElementById('arProfileId');
+			const arProfilePhone = document.getElementById('arProfilePhone');
+			const arProfilePosition = document.getElementById('arProfilePosition');
+			const arProfileLocation = document.getElementById('arProfileLocation');
+			const arGlitch = document.getElementById('arGlitch');
+			const arContainer = document.querySelector('.ar-container');
+			
+			// Clear previous content and prepare for typing effect
+			arProfileName.innerHTML = '<span class="typing-text"></span><span class="typing-cursor"></span>';
+			arProfileId.innerHTML = '<span class="typing-text"></span><span class="typing-cursor"></span>';
+			arProfilePhone.innerHTML = '<span class="typing-text"></span><span class="typing-cursor"></span>';
+			arProfilePosition.innerHTML = '<span class="typing-text"></span><span class="typing-cursor"></span>';
+			arProfileLocation.innerHTML = '<span class="typing-text"></span><span class="typing-cursor"></span>';
+			
+			// Show overlay with animation
+			arOverlay.classList.add('visible');
+			
+			// Initial connection effect
+			arContainer.classList.add('shake-effect');
+			setTimeout(() => {
+				arContainer.classList.remove('shake-effect');
+			}, 500);
+			
+			// Add visual glitch effects
+			createGlitchEffects(arGlitch);
+			
+			// Start playing audio
+			AudioPlayer.play();
+			
+			// Set lifeguard styling if applicable
+			if (member.isLifeGuard) {
+				arOverlay.classList.add('lifeguard-profile');
+			} else {
+				arOverlay.classList.remove('lifeguard-profile');
+			}
+			
+			// Start typing effects with delays
+			setTimeout(() => {
+				typeWriterEffect(arProfileName.querySelector('.typing-text'), member.name, 30);
+			}, 500);
+			
+			setTimeout(() => {
+				typeWriterEffect(arProfileId.querySelector('.typing-text'), `ID: ${member.id}`, 40);
+			}, 1500);
+			
+			setTimeout(() => {
+				typeWriterEffect(arProfilePhone.querySelector('.typing-text'), member.phone, 50);
+			}, 2500);
+			
+			setTimeout(() => {
+				const position = member.isLifeGuard ? 'LIFEGUARD' : 'SECURITY STAFF';
+				typeWriterEffect(arProfilePosition.querySelector('.typing-text'), position, 40);
+			}, 3500);
+			
+			setTimeout(() => {
+				typeWriterEffect(arProfileLocation.querySelector('.typing-text'), member.dutyLocation || 'ABU DHABI ACCOMMODATION', 40);
+			}, 4500);
+			
+			// Store interval on overlay to clear later
+			arOverlay.dataset.mildGlitchInterval = setInterval(() => {
+				if (Math.random() > 0.7 && arOverlay.classList.contains('visible')) {
+					const arGlitchLines = document.querySelector('.ar-glitch-lines');
+					arGlitchLines.style.opacity = '0.2';
+					setTimeout(() => {
+						arGlitchLines.style.opacity = '0';
+					}, 100);
+				}
+			}, 3000);
+		}
+
+		// Update typeWriterEffect function to remove sound
+		function typeWriterEffect(element, text, speed) {
+			let i = 0;
+			element.textContent = '';
+			
+			function typeNextChar() {
+				if (i < text.length) {
+					element.textContent += text.charAt(i);
+					i++;
+					setTimeout(typeNextChar, speed);
+				}
+			}
+			
+			typeNextChar();
+		}
+
+		// Update close AR Profile function
+		document.getElementById('arClose').addEventListener('click', () => {
+			const arOverlay = document.getElementById('arOverlay');
+			const arGlitch = document.getElementById('arGlitch');
+			
+			// Stop audio
+			AudioPlayer.stop();
+			
+			// Final glitch effect
+			const arContainer = document.querySelector('.ar-container');
+			arContainer.classList.add('shake-effect');
+			arGlitch.classList.add('ar-glitch-active');
+			
+			setTimeout(() => {
+				// Remove visible class
+				arOverlay.classList.remove('visible');
+				
+				// Clear glitch interval
+				if (arGlitch.dataset.interval) {
+					clearInterval(parseInt(arGlitch.dataset.interval));
+				}
+				
+				// Clear mild glitch interval
+				if (arOverlay.dataset.mildGlitchInterval) {
+					clearInterval(parseInt(arOverlay.dataset.mildGlitchInterval));
+				}
+				
+				// Remove all text glitch effects
+				removeTextGlitchEffect();
+			}, 400);
+		});
+
+		// Initialize audio system when page loads
+		window.addEventListener('load', () => {
+			AudioPlayer.init();
+		});
 	</script>
 </body>
 </html>
